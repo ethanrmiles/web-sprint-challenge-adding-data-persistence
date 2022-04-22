@@ -3,8 +3,13 @@ const Model = require('./model')
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
-    res.send('hey there from project!')
+router.get('/', async(req, res, next) => {
+    try{
+        const project = await Model.getProjects()
+        res.json(project)
+    }catch(err){
+        next(err)
+    }
 })
 
 router.post('/', (req, res) => {
