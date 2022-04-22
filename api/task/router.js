@@ -7,4 +7,8 @@ router.get('/', (req, res) => {
     res.send('hey there from task!')
 })
 
+router.post('/', (req, res) => {
+    res.send('hey there from task!')
+})
+
 module.exports = router
