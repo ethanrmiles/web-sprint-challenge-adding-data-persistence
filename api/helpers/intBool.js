@@ -14,6 +14,14 @@ function reconfigObjStructure(project) {
   }
 }
 
+function reconfigTaskStructure(task){
+  return {
+    ...task,
+    task_completed: intToBoolean(task.task_completed),
+  }
+}
+
 module.exports = {
-  reconfigObjStructure
+  reconfigObjStructure,
+  reconfigTaskStructure
 }
