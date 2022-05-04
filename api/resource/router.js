@@ -12,8 +12,18 @@ router.get('/', async(req, res, next) => {
     }
 })
 
-router.post('/', (req, res) => {
-    res.send('hey there from resource!')
+router.post('/', async(req, res) => {
+    const existingDbResource = await Model.findExistingResource(req.body.resource_name)
+    if(existingDbResource){
+        res.status(400).json({ message: 'this resource already exists'})
+    }else{
+        const newResource = await  Model.postResources(req.body)
+        res.status(201).json(newResource)
+    }
+
+
+
+  
 })
 
 module.exports = router
