@@ -1,12 +1,16 @@
 function intToBoolean(int) {
-  return int === 1 ? true : false
+  if(int === 0 || int === null || int === undefined){
+    return false
+  }else if(int === 1){
+    return true
+  }
   
 }
 
 function reconfigObjStructure(project) {
   return {
     ...project,
-    project_completed: intToBoolean(project.completed),
+    project_completed: intToBoolean(project.project_completed),
   }
 }
 
