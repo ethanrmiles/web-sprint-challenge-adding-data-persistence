@@ -8,17 +8,26 @@ function getTasks () {
     .then(tasks => tasks.map(task => reconfigTaskStructure(task)))
 }
 
-function getById (resource_id) {
-    return db('resources')
-    .where('resource_id', resource_id)
+function getById (task_id) {
+    return db('tasks')
+    .where('task_id', task_id)
     .first()
 }
 
 function postTasks (newTask){
+    return db('tasks')
+    .insert(newTask)
+    .then(([task_id]) => getById(task_id));
+}
 
+function findExistingProjectId(project_id){
+    return db('projects')
+    .where('project_id', project_id)
+    .first()
 }
 
 module.exports = {
     getTasks,
-    postTasks
+    postTasks,
+    findExistingProjectId
 }
