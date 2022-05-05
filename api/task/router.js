@@ -2,6 +2,7 @@ const express = require('express')
 const Model = require('./model')
 const projModel = require('../project/model')
 const { reconfigTaskStructure } = require('../helpers/intBool')
+const { checkProjectId, checkPayload } = require('../helpers/middlewear')
 
 const router = express.Router()
 
@@ -17,35 +18,31 @@ router.get('/', async(req, res, next) => {
 // !existingProjectId
 // !req.body.task_description
 
-router.post('/', async(req, res) => {
-    const existingProjectId = await Model.findExistingProjectId(req.body.project_id)
-    if(!req.body.task_description){
-        res.status(400).json({ message: "you must provide a task description"})
-    }else if(!req.body.project_id){
-        res.status(400).json({ message: "you must provide a project id"})
-    }else if(!existingProjectId){
-        res.status(400).json({ message: "you must provide a valid project id"})
-    }else{
-        const newTask = await Model.postTasks(req.body)
-    .then(creation => {
-        const reconfig = reconfigTaskStructure(creation)
-        res.status(201).json(reconfig)
+router.post('/',  checkPayload, async(req, res, next) => {
+    
+    //  const newTask = await Model.postTasks(req.body)
+    // .then(creation => {
+    //     const reconfig = reconfigTaskStructure(creation)
+    //     res.status(201).json(reconfig)
+    // })
+    // .catch(err => {
+    //     next(err)
+    // })
+
+    Model.postTasks(req.body)
+    .then(newTask => {
+            const reconfig = reconfigTaskStructure(newTask)
+                res.status(201).json(reconfig)
     })
-    }
+    .catch(err => {
+        next(err)
+    })
+    
 })
 
-// async function getProj (num){
-//     const projs = await projModel.getProjects()
-//         projs.some(proj => {
-//         if(proj.project_id === num){
-//             return true
-//         }
-//     })
-// }
-
-// getProj(2).then(res => {
-//     console.log(res)
-// })
+router.use((err, req, res, next) => { // eslint-disable-line
+    res.status(err.status || 400).json({ message: err.message })
+  })
 
 
 module.exports = router
